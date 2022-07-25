@@ -1788,8 +1788,17 @@ function _unsilent() {
 }
 
 function _ghostIsFirst(evt, vertical, sortable) {
+	// Gilad was here
 	let rect = getRect(getChild(sortable.el, 0, sortable.options, true));
 	const spacer = 10;
+	const isRtl = getComputedStyle(sortable.el).direction == "rtl";
+
+
+	if (isRtl) {
+		return vertical ?
+			((evt.clientX > rect.right + spacer) || (evt.clientY < rect.top && evt.clientX > rect.left)) :
+			((evt.clientY < rect.top - spacer) || (evt.clientY < rect.bottom && evt.clientX > rect.right))		
+	}
 
 	return vertical ?
 		((evt.clientX < rect.left - spacer) || (evt.clientY < rect.top && evt.clientX < rect.right)) :
@@ -1799,6 +1808,14 @@ function _ghostIsFirst(evt, vertical, sortable) {
 function _ghostIsLast(evt, vertical, sortable) {
 	let rect = getRect(lastChild(sortable.el, sortable.options.draggable));
 	const spacer = 10;
+
+	const isRtl = getComputedStyle(sortable.el).direction == "rtl";
+
+	if (isRtl) {
+		return vertical ?
+		(evt.clientX < rect.left - spacer || evt.clientX > rect.left && evt.clientY > rect.bottom && evt.clientX < rect.right) :
+		(evt.clientX < rect.left && evt.clientY > rect.top || evt.clientX > rect.left && evt.clientY > rect.bottom + spacer);
+	}
 
 	return vertical ?
 		(evt.clientX > rect.right + spacer || evt.clientX <= rect.right && evt.clientY > rect.bottom && evt.clientX >= rect.left) :
